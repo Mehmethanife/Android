@@ -1,0 +1,45 @@
+name: Trigger auto deployment for container-app-mjo2do34ftow4
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ 1-17681c2b647ad7bfdc7cbf52c8a9067775bfe9ad ]
+    paths:
+    - '/memetcimen/**'
+    - '.github/workflows/container-app-mjo2do34ftow4-AutoDeployTrigger-afe35e27-5f01-47b6-8a21-000fdb9cd6a8.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CONTAINERAPPMJO2DO34FTOW4_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.CONTAINERAPPMJO2DO34FTOW4_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.CONTAINERAPPMJO2DO34FTOW4_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/memetcimen 
+          registryUrl: containerregistrymjo2do34ftow4.azurecr.io
+          registryUsername: ${{ secrets.CONTAINERAPPMJO2DO34FTOW4_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.CONTAINERAPPMJO2DO34FTOW4_REGISTRY_PASSWORD }}
+          containerAppName: container-app-mjo2do34ftow4
+          resourceGroup: androidbf4d
+          imageToBuild: containerregistrymjo2do34ftow4.azurecr.io/container-app-mjo2do34ftow4:${{ github.sha }}
+          dockerfilePath: Dockerfile
+
+
