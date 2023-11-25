@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Is
+  labels:
+    app: Is
+  namespace: namespace-workflow-1700883957608
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: Is
+  template:
+    metadata:
+      labels:
+        app: Is
+    spec:
+      containers:
+        - name: Is
+          image: containerregistryaey3hly6lrd5e.azurecr.io/image-workflow-1700883957608:latest
+          ports:
+            - containerPort: 3000
